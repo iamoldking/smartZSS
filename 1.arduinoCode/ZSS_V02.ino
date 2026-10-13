@@ -133,6 +133,12 @@ void setup() {
   // init
   resetCounter();
   //resetMCP2515();
+  
+  // init EMA state from the current encoder count (no start-up transient for any EMA_DEPTH)
+  angleRaw      = encoder.readEncoder();
+  emaAcc        = angleRaw * EMA_DEPTH;   // emaAcc holds output * EMA_DEPTH
+  angleFiltered = angleRaw;
+  angleAtLastTx = angleRaw;               // first angleRate = 0, not a jump
 
 #ifdef DEBUG_LED
   pinMode(PIN_DEBUG_LED, OUTPUT);
