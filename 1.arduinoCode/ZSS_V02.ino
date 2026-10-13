@@ -92,7 +92,7 @@ const uint8_t CAN_TX_PERIOD_LOOPS = 99;
  *   the high side for lateral control. If steering feels sluggish on the road,
  *   reduce this value first (try 8 or 4).
  * ------------------------------------------------------------------------- */
-const int32_t EMA_DEPTH = 4;
+const int32_t EMA_DEPTH = 1;
 
 
 /* ---------------------------------------------------------------------------
