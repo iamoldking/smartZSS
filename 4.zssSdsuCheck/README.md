@@ -152,9 +152,3 @@ A：IP 被別的裝置用過。在 Mac 先備份再刪掉舊的 key：
 cp -p ~/.ssh/known_hosts ~/.ssh/known_hosts.bak
 ssh-keygen -R <comma-four-IP>
 ```
-
-**Q：0x23 頻率是 400 多 Hz**
-A：ZSS 韌體還是舊的「迴圈計數」版本。請燒錄 `1.arduinoCode/ZSS_V02.ino`（`delay(10)` 版本，約 98 Hz）。
-
-**Q：0x2FF 的 state 一直是 `FAULT_TIMEOUT`**
-A：正常。openpilot 控制縱向時會送 ACC_CONTROL，sDSU 就不再轉送 DSU 的訊息，state 會顯示 `FAULT_TIMEOUT`。
