@@ -21,9 +21,9 @@
  */
 
 #include <SPI.h>
-#include <Encoder_Buffer.h>   // LS7366R quadrature counter
-#include <can.h>
-#include <mcp2515.h>
+// autowp-mcp2515 v1.3.1 (MIT) is bundled in src/mcp2515/, no library install needed
+#include "src/mcp2515/can.h"
+#include "src/mcp2515/mcp2515.h"
 
 //#define DEBUG_SERIAL        // print each frame (adds time, so CAN rate drops a bit)
 
@@ -33,7 +33,12 @@
 const uint16_t CAN_ID      = 0x23;
 const unsigned long TX_MS  = 10;    // 10ms delay -> just under 100Hz
 
-Encoder_Buffer encoder(PIN_CS_ENCODER);
+// LS7366R commands (datasheet): write MDR0/MDR1, read CNTR, clear CNTR
+#define LS_WR_MDR0  0x88
+#define LS_WR_MDR1  0x90
+#define LS_RD_CNTR  0x60
+#define LS_CLR_CNTR 0x20
+const SPISettings LS7366R_SPI(1000000, MSBFIRST, SPI_MODE0);
 MCP2515        mcp2515(PIN_CS_MCP2515);
 struct can_frame msg;
 
@@ -44,20 +49,22 @@ void setup() {
   Serial.begin(115200);
   Serial.println("ZSS START");
 
+  pinMode(PIN_CS_ENCODER, OUTPUT);
+  digitalWrite(PIN_CS_ENCODER, HIGH);  // keep LS7366R off the bus while MCP2515 starts
   SPI.begin();
 
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ);
   mcp2515.setNormalMode();
 
-  encoder.initEncoder();
+  initEncoder();
   clearEncoder();                   // 0 = wheel position at power-on
-  lastCount = encoder.readEncoder();
+  lastCount = readEncoder();
 }
 
 
 void loop() {
-  int32_t count = encoder.readEncoder();
+  int32_t count = readEncoder();
   int32_t rate  = abs(count - lastCount);   // abs() around the difference, not abs(a) - abs(b)
   lastCount = count;
 
@@ -94,9 +101,43 @@ uint8_t toyotaChecksum(const uint8_t *data, uint8_t len, uint16_t canId) {
 }
 
 
-// LS7366R command CLR_CNTR: set the counter to 0
-void clearEncoder() {
+// ---- LS7366R driver (replaces the Encoder_Buffer library, same behavior) ----
+
+// MDR0 = 0x03: x4 quadrature, free-running, index off, filter clock /1
+// MDR1 = 0x00: 4-byte counter, counting enabled
+void initEncoder() {
+  SPI.beginTransaction(LS7366R_SPI);
   digitalWrite(PIN_CS_ENCODER, LOW);
-  SPI.transfer(0x20);
+  SPI.transfer(LS_WR_MDR0);
+  SPI.transfer(0x03);
   digitalWrite(PIN_CS_ENCODER, HIGH);
+
+  digitalWrite(PIN_CS_ENCODER, LOW);
+  SPI.transfer(LS_WR_MDR1);
+  SPI.transfer(0x00);
+  digitalWrite(PIN_CS_ENCODER, HIGH);
+  SPI.endTransaction();
+}
+
+// Read the 32-bit counter, high byte first
+int32_t readEncoder() {
+  uint32_t v = 0;
+  SPI.beginTransaction(LS7366R_SPI);
+  digitalWrite(PIN_CS_ENCODER, LOW);
+  SPI.transfer(LS_RD_CNTR);
+  for (uint8_t i = 0; i < 4; i++) {
+    v = (v << 8) | SPI.transfer(0x00);
+  }
+  digitalWrite(PIN_CS_ENCODER, HIGH);
+  SPI.endTransaction();
+  return (int32_t)v;
+}
+
+// CLR_CNTR: set the counter to 0
+void clearEncoder() {
+  SPI.beginTransaction(LS7366R_SPI);
+  digitalWrite(PIN_CS_ENCODER, LOW);
+  SPI.transfer(LS_CLR_CNTR);
+  digitalWrite(PIN_CS_ENCODER, HIGH);
+  SPI.endTransaction();
 }
