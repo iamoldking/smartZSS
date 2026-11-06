@@ -25,7 +25,9 @@ Every 10 ms the board reads the LS7366R encoder count and sends it on CAN as `0x
 | data[4..6] | \|count change\| since the last frame (not used by openpilot) |
 | data[7] | Toyota checksum |
 
-- Scale: about 105 counts per degree → DBC factor `0.009538` deg/count (measured on the car, 2026-10-13).
+- Scale: DBC factor `0.004901594652` deg/count (about 204 counts per degree),
+  same as `opendbc/dbc/toyota_zss.dbc` in the `op0.11.2-zss` branch:
+  `ZORRO_STEER : 7|24@0- (0.004901594652,0)`.
 - Zero: the counter is cleared at power-on, so 0 = wheel position at power-on.
 
 ## Build and upload
@@ -100,7 +102,9 @@ ZSS（Zorro Steering Sensor）給 Toyota Prius 用的 Arduino firmware。
 | data[4..6] | 跟上一個 frame 相比的 count 變化量（取絕對值，openpilot 沒用到） |
 | data[7] | Toyota checksum |
 
-- 比例：大約每 1 度 105 counts → DBC factor `0.009538` deg/count（2026-10-13 上車實測）。
+- 比例：DBC factor `0.004901594652` deg/count（大約每 1 度 204 counts），
+  以 `op0.11.2-zss` branch 的 `opendbc/dbc/toyota_zss.dbc` 為準：
+  `ZORRO_STEER : 7|24@0- (0.004901594652,0)`。
 - 歸零：開機時 counter 清成 0，所以 0 = 開機那一刻方向盤的位置。
 
 ## Compile 與 Upload

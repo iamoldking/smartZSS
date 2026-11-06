@@ -14,8 +14,8 @@
  *   data[4..6]  |count change| since the last frame (not used by openpilot)
  *   data[7]     Toyota checksum
  *
- * Scale: measured on the car (2026-10-13), about 105 counts per degree
- *   -> DBC factor 0.009538 deg/count (the old 0.004901594652 was for 204 counts/deg).
+ * Scale: DBC factor 0.004901594652 deg/count (about 204 counts per degree),
+ *   same as opendbc/dbc/toyota_zss.dbc in the op0.11.2-zss branch.
  * Zero: the counter is cleared at power-on, so 0 = wheel position at power-on.
  * ===========================================================================
  */
