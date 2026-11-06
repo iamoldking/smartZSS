@@ -102,10 +102,12 @@ comma device 上也留一份：`/data/personal_settings/zss_reports/`。
 | `ZSS gain vs stock` | OK / CHECK / INFO | 1.00 = DBC factor 正確（±5% 內 OK）。CHECK → 參考 suggested factor。INFO → 方向盤轉不夠，再轉大一點 |
 | `ZSS offset` | INFO | ZSS 和原車角度的固定差值 |
 
-### 4.3 角度圖
+### 4.3 角度圖（兩張）
 
-- 藍線 = 原車 0x25，紅線 = ZSS 0x23 **扣掉 offset**。
-- **兩條線疊在一起** → ZSS 正常。
+| 圖 | 內容 | 怎麼判斷 |
+|---|---|---|
+| **Steering angle** | 原始角度：藍線 = 原車 0x25，紅線 = ZSS 0x23 | 兩條線有固定間距（offset）。轉方向盤時**間距保持不變** → ZSS 正常 |
+| **Steering angle (ZSS − offset)** | 紅線扣掉 offset | **兩條線疊在一起** → ZSS 正常 |
 
 ---
 

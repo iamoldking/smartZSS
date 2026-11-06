@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-zss_check.py (v1.0) - ZSS check on a comma four / comma three (read only).
+zss_check.py (v1.1) - ZSS check on a comma four / comma three (read only).
 
   Print the 0x23 (ZSS) angle and the 0x25 (stock) angle side by side,
   then write an HTML report (result table + angle plot) and a CSV.
@@ -95,8 +95,9 @@ def offset(rows: list) -> float:
   return d[len(d) // 2] if d else 0.0
 
 
-def svg_plot(rows: list, off: float) -> str:
-  """rows: (t, zss, stock). Blue = stock, red = ZSS - offset (lines overlap when ZSS is good)."""
+def svg_plot(rows: list, off: float = 0.0) -> str:
+  """rows: (t, zss, stock). Blue = stock, red = ZSS - off.
+  off = 0: raw ZSS angle. off = offset(): lines overlap when ZSS is good."""
   if len(rows) < 2:
     return "<p>no angle data</p>"
   step = max(1, len(rows) // 1500)
@@ -121,7 +122,7 @@ def svg_plot(rows: list, off: float) -> str:
   o.append(f'<text x="5" y="{P}" font-size="12">{hi:.0f}°</text><text x="5" y="{H-P}" font-size="12">{lo:.0f}°</text>')
   o.append(f'<text x="{P}" y="{H-10}" font-size="12">0 s</text><text x="{W-P-40}" y="{H-10}" font-size="12">{t1-t0:.0f} s</text>')
   o.append(f'<text x="{P+10}" y="20" font-size="13" fill="#1f77b4">■ stock 0x25</text>'
-           f'<text x="{P+160}" y="20" font-size="13" fill="#d62728">■ ZSS 0x23 − offset ({off:+.2f}°)</text></svg>')
+           f'<text x="{P+160}" y="20" font-size="13" fill="#d62728">■ ZSS 0x23{f" − offset ({off:+.2f}°)" if off else ""}</text></svg>')
   return "\n".join(o)
 
 
@@ -145,8 +146,11 @@ th{{background:#f3f3f3}}</style></head><body>
 <h1>ZSS check</h1>
 <p>{time.strftime("%Y-%m-%d %H:%M:%S")} · ZSS factor {ZSS_FACTOR} deg/count (from {html.escape(ZSS_FACTOR_SRC)}) · stock 0x25 = STEER_ANGLE only (1.5° steps)</p>
 <table><tr><th>Check</th><th>Result</th><th>Detail</th></tr>{trs}</table>
-<h2>Steering angle</h2>{svg_plot(rows, off)}
-<p>ZSS 0 = wheel position at ZSS power-on, so the red line is shifted by the offset ({off:+.2f}°).
+<h2>Steering angle</h2>{svg_plot(rows)}
+<p>Raw angles. ZSS 0 = wheel position at ZSS power-on, so the two lines have a constant offset.
+If the gap stays the same while turning, ZSS is good.</p>
+<h2>Steering angle (ZSS − offset)</h2>{svg_plot(rows, off)}
+<p>The red line is shifted by the offset ({off:+.2f}°).
 If the red and blue lines stay on top of each other while turning, ZSS is good.
 The blue line moves in 1.5° steps, so a small gap (about ±0.75°) is normal.</p>
 <p>Data: {html.escape(os.path.basename(csv_path))} ({len(rows)} rows)</p></body></html>"""
@@ -156,7 +160,7 @@ The blue line moves in 1.5° steps, so a small gap (about ±0.75°) is normal.</
 
 
 def main():
-  ap = argparse.ArgumentParser(description="ZSS check v1.0 (read only)")
+  ap = argparse.ArgumentParser(description="ZSS check v1.1 (read only)")
   ap.add_argument("-t", "--duration", type=float, default=DEFAULT_SECONDS,
                   help=f"seconds to run, default {DEFAULT_SECONDS:.0f} (0 = until Ctrl+C)")
   args = ap.parse_args()
