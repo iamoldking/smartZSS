@@ -27,7 +27,7 @@
  *   counts per degree on the car (measured 2026-11-08 with ZSS_V02: gain 0.5145
  *   vs stock 0x25 over -118..+48 deg), so the count is multiplied by
  *   SCALE_NUM / SCALE_DEN = 1.9435 before it is sent.
- *   To re-calibrate: run zss_sdsu_check.py v3.5, read "firmware scale needed xK",
+ *   To re-calibrate: run 5.zssCheck/readzss.py (zss_check.py v2.0), read "firmware scale needed xK",
  *   then new SCALE_NUM = old SCALE_NUM * K (keep SCALE_DEN = 10000).
  * Zero: the counter is cleared at power-on, so 0 = wheel position at power-on.
  * ===========================================================================
