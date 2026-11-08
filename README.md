@@ -13,7 +13,6 @@ Files for the ZSS (Zorro Steering Sensor) on a Toyota Prius with openpilot
 | `1.arduinoCode/zss_47600_v01/` | Arduino Nano firmware, **ONLY for EPS 89650-47600**: count x 1.9435 so CAN `0x23` matches the DBC factor `0.004901594652`; fixed 10 ms (100 Hz). Libraries bundled in `src/`. |
 | `2.housing/` | Housing 3D model (`ZSS_V2.STL`) |
 | `3.schematic/` | Schematic (`ZSS_V0.2.pdf`) |
-| `4.zssSdsuCheck/` | Older check tool, runs on the comma device. See its `README.md`. |
 | `5.zssCheck/` | **ZSS check from the Mac**: ssh to the comma device, 10 s test with live 0x23 / 0x25 angles, HTML + CSV + raw CSV (every 0x23 / 0x25 frame) copied back. Works on openpilot 0.9.8 and 0.11.x. See its `README.md`. |
 
 ## Quick start: check the ZSS
@@ -52,7 +51,6 @@ Toyota Prius + openpilot（`iambluefred/openpilot` 的 `op0.11.2-zss` branch）�
 | `1.arduinoCode/zss_47600_v01/` | Arduino Nano 韌體，**只適合 EPS 89650-47600**：count × 1.9435，讓 CAN `0x23` 符合 DBC factor `0.004901594652`；固定每 10 ms（100 Hz）。library 已放在 `src/`。 |
 | `2.housing/` | 外殼 3D 模型（`ZSS_V2.STL`） |
 | `3.schematic/` | 電路圖（`ZSS_V0.2.pdf`） |
-| `4.zssSdsuCheck/` | 舊版檢查工具，在 comma device 上執行。說明見裡面的 `README.md`。 |
 | `5.zssCheck/` | **在 Mac 上檢查 ZSS**：SSH 到 comma device，測 10 秒，即時顯示 0x23 / 0x25 角度，HTML、CSV、raw CSV（每一筆 0x23 / 0x25）抓回 Mac。支援 openpilot 0.9.8 和 0.11.x。說明見裡面的 `README.md`。 |
 
 ## 快速開始：檢查 ZSS
