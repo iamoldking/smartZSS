@@ -14,10 +14,7 @@ Files for the ZSS (Zorro Steering Sensor) on a Toyota Prius with openpilot
 | `2.housing/` | Housing 3D model (`ZSS_V2.STL`) |
 | `3.schematic/` | Schematic (`ZSS_V0.2.pdf`) |
 | `4.zssSdsuCheck/` | Older check tool, runs on the comma device. See its `README.md`. |
-| `4.zssSdsuCheck_v34/` | `zss_sdsu_check.py` v3.4: also works on openpilot 0.9.8. |
-| `4.zssSdsuCheck_v35/` | `zss_sdsu_check.py` v3.5: fixed factor `0.004901594652`, every 0x23 / 0x25 frame saved to `*_raw.csv`. |
-| `4.zssCheck_v36/` | `zss_check.py` v3.6: v3.5 without sDSU (0x2FF). |
-| `5.zssCheck/` | **ZSS check from the Mac**: ssh to the comma device, 10 s test with live 0x23 / 0x25 angles, HTML report copied back. See its `README.md`. |
+| `5.zssCheck/` | **ZSS check from the Mac**: ssh to the comma device, 10 s test with live 0x23 / 0x25 angles, HTML + CSV + raw CSV (every 0x23 / 0x25 frame) copied back. Works on openpilot 0.9.8 and 0.11.x. See its `README.md`. |
 
 ## Quick start: check the ZSS
 
@@ -56,10 +53,7 @@ Toyota Prius + openpilot（`iambluefred/openpilot` 的 `op0.11.2-zss` branch）�
 | `2.housing/` | 外殼 3D 模型（`ZSS_V2.STL`） |
 | `3.schematic/` | 電路圖（`ZSS_V0.2.pdf`） |
 | `4.zssSdsuCheck/` | 舊版檢查工具，在 comma device 上執行。說明見裡面的 `README.md`。 |
-| `4.zssSdsuCheck_v34/` | `zss_sdsu_check.py` v3.4：也支援 openpilot 0.9.8。 |
-| `4.zssSdsuCheck_v35/` | `zss_sdsu_check.py` v3.5：factor 固定 `0.004901594652`，每一筆 0x23 / 0x25 都存到 `*_raw.csv`。 |
-| `4.zssCheck_v36/` | `zss_check.py` v3.6：v3.5 拿掉 sDSU（0x2FF）。 |
-| `5.zssCheck/` | **在 Mac 上檢查 ZSS**：SSH 到 comma device，測 10 秒，即時顯示 0x23 / 0x25 角度，HTML 報告抓回 Mac。說明見裡面的 `README.md`。 |
+| `5.zssCheck/` | **在 Mac 上檢查 ZSS**：SSH 到 comma device，測 10 秒，即時顯示 0x23 / 0x25 角度，HTML、CSV、raw CSV（每一筆 0x23 / 0x25）抓回 Mac。支援 openpilot 0.9.8 和 0.11.x。說明見裡面的 `README.md`。 |
 
 ## 快速開始：檢查 ZSS
 

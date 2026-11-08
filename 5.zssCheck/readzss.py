@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-readzss.py (v2.0) - run the ZSS check on a comma four / comma three from the Mac.
+readzss.py (v2.1) - run the ZSS check on a comma four / comma three from the Mac.
 
   1. scp zss_check.py (same folder as this file) -> comma@<IP>:/data/
   2. ssh: run it for 10 s; the 0x23 (ZSS) and 0x25 (stock) angles show live here
-  3. scp the HTML + CSV back to ./zss_reports/ (the folder you run this command in)
+  3. scp the HTML + CSV + raw CSV back to ./zss_reports/ (the folder you run this command in)
   4. open the HTML report
 
 Usage (on the Mac):
@@ -60,7 +60,7 @@ def main():
     for line in p.stdout:
       line = line.rstrip("\r\n")
       print(line, flush=True)
-      m = re.match(r"^(report|data):\s+(\S+)$", line.strip())
+      m = re.match(r"^(report|data|raw):\s+(\S+)$", line.strip())
       if m:
         files[m.group(1)] = m.group(2)
   except KeyboardInterrupt:
@@ -68,7 +68,7 @@ def main():
     for line in p.stdout:
       line = line.rstrip("\r\n")
       print(line, flush=True)
-      m = re.match(r"^(report|data):\s+(\S+)$", line.strip())
+      m = re.match(r"^(report|data|raw):\s+(\S+)$", line.strip())
       if m:
         files[m.group(1)] = m.group(2)
   p.wait()

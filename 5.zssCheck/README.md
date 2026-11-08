@@ -8,7 +8,9 @@
 4. 打開 HTML 報告（結果表 + 角度圖）
 
 - **只讀不寫**：只監聽 CAN，不送任何 CAN，也不修改 `/data/openpilot`。openpilot 執行中也可以跑。
-- 適用：`iambluefred/openpilot` 的 `op0.11.2-zss` branch（Toyota Prius + ZSS）。
+- 適用：openpilot **0.9.8** 和 **0.11.x**（例如 `iambluefred/openpilot` 的 `op0.11.2-zss`）。
+- ZSS factor 固定用 `0.004901594652` deg/count（`toyota_zss.dbc` 的值）。
+- 版本：`zss_check.py` v2.0、`readzss.py` v2.1（合併了舊的 `4.zssSdsuCheck_v34`～`4.zssCheck_v36`）。
 
 ---
 
@@ -71,8 +73,9 @@ python3 readzss.py 172.20.10.6
 
 ```
 zss_reports/
-├── zss_<日期_時間>.html   結果表 + 角度圖
-└── zss_<日期_時間>.csv    每個 0x25 frame 一行：t_s, zss_deg, stock_deg, diff_deg
+├── zss_<日期_時間>.html      結果表 + 角度圖
+├── zss_<日期_時間>.csv       每個 0x25 frame 一行：t_s, zss_deg, stock_deg, diff_deg
+└── zss_<日期_時間>_raw.csv   每一筆 0x23 和 0x25：t_ns, t_s, addr, raw, deg, hex
 ```
 
 comma device 上也留一份：`/data/personal_settings/zss_reports/`。
@@ -97,9 +100,10 @@ comma device 上也留一份：`/data/personal_settings/zss_reports/`。
 
 | 項目 | 結果 | 意思 / 處理 |
 |---|---|---|
-| `0x23 ZSS found` | OK / NOT FOUND | 新韌體約 98 Hz。NOT FOUND → 檢查 ZSS 電源、CAN 接線、韌體 |
+| `0x23 ZSS found` | OK / NOT FOUND | 新韌體約 100 Hz。NOT FOUND → 檢查 ZSS 電源、CAN 接線、韌體 |
+| `0x23 period` | INFO | 0x23 間隔的平均／最小／最大（ms）。新韌體平均約 10 ms |
 | `0x25 stock angle found` | OK / NOT FOUND | NOT FOUND → 檢查 comma 和車子的 harness |
-| `ZSS gain vs stock` | OK / CHECK / INFO | 1.00 = DBC factor 正確（±5% 內 OK）。CHECK → 參考 suggested factor。INFO → 方向盤轉不夠，再轉大一點 |
+| `ZSS gain vs stock` | OK / CHECK / INFO | 1.00 = ZSS 韌體符合 factor（±5% 內 OK）。CHECK → 照 `firmware scale needed xK` 調整韌體的 `SCALE_NUM`（新 = 舊 × K）。INFO → 方向盤轉不夠，再轉大一點 |
 | `ZSS offset` | INFO | ZSS 和原車角度的固定差值 |
 
 ### 4.3 角度圖（兩張）
@@ -127,7 +131,7 @@ ssh-keygen -R 172.20.10.6
 ```
 
 **Q：出現 `cannot import openpilot`**
-A：comma device 上的 openpilot 不是 0.11.x，或 `/data/openpilot` 不存在。
+A：comma device 上的 openpilot 不是 0.9.8 / 0.11.x，或 `/data/openpilot` 不存在。
 
 **Q：想手動在 comma device 上跑**
 ```bash
