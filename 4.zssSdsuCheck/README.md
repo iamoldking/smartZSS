@@ -135,7 +135,6 @@ ZSS gain vs stock        INFO      1.002 (1.00 = DBC factor right; suggested fac
 |---|---|---|
 | `ZSS_DBC` | `/data/openpilot/opendbc_repo/opendbc/dbc/toyota_zss.dbc` | ZSS factor 從這個 DBC 讀 |
 | `ZSS_FACTOR_DEFAULT` | `0.004901594652` | DBC 讀不到時才用 |
-| `SDSU_MIN_HZ` | `50.0` | sDSU PASS 門檻 |
 | `PRINT_EVERY_S` | `0.5` | 畫面多久印一行 |
 | `OUT_DIR` | `/data/personal_settings/zss_sdsu_reports` | 結果存放位置 |
 
