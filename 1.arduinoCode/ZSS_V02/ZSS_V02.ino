@@ -1,7 +1,8 @@
 /* ===========================================================================
  * ZSS_V02.ino - ZSS (Zorro Steering Sensor) for Toyota Prius
  *
- * Every 10ms: read the LS7366R encoder count and send it as CAN 0x23.
+ * Every 10 ms (100 Hz, fixed period): read the LS7366R encoder count and
+ * send it as CAN 0x23.
  *
  * Hardware: Arduino Nano (ATmega328P, Old Bootloader, flash at 57600 baud)
  *   SPI: SCK = D13, MOSI = D11, MISO = D12
@@ -10,8 +11,7 @@
  *
  * CAN 0x23 SECONDARY_STEER_ANGLE, DLC 8 (toyota_zss.dbc):
  *   data[0..2]  encoder count, 24-bit big-endian signed (ZORRO_STEER 7|24@0-)
- *   data[3]     0
- *   data[4..6]  |count change| since the last frame (not used by openpilot)
+ *   data[3..6]  0
  *   data[7]     Toyota checksum
  *
  * Scale: DBC factor 0.004901594652 deg/count (about 204 counts per degree),
@@ -31,7 +31,8 @@
 #define PIN_CS_MCP2515   9
 
 const uint16_t CAN_ID      = 0x23;
-const unsigned long TX_MS  = 10;    // 10ms delay -> just under 100Hz
+const unsigned long TX_PERIOD_US = 10000;   // one CAN frame every 10 ms (100 Hz)
+unsigned long nextTxUs = 0;                 // time of the next frame (micros)
 
 // LS7366R commands (datasheet): write MDR0/MDR1, read CNTR, clear CNTR
 #define LS_WR_MDR0  0x88
@@ -42,7 +43,6 @@ const SPISettings LS7366R_SPI(1000000, MSBFIRST, SPI_MODE0);
 MCP2515        mcp2515(PIN_CS_MCP2515);
 struct can_frame msg;
 
-int32_t lastCount = 0;              // count sent in the previous frame
 
 
 void setup() {
@@ -59,14 +59,17 @@ void setup() {
 
   initEncoder();
   clearEncoder();                   // 0 = wheel position at power-on
-  lastCount = readEncoder();
+  nextTxUs = micros();
 }
 
 
 void loop() {
+  // wait for the next 10 ms slot (fixed period, does not drift)
+  while ((long)(micros() - nextTxUs) < 0) {}
+  nextTxUs += TX_PERIOD_US;
+  if ((long)(micros() - nextTxUs) > 0) nextTxUs = micros() + TX_PERIOD_US;  // fell behind: resync
+
   int32_t count = readEncoder();
-  int32_t rate  = abs(count - lastCount);   // abs() around the difference, not abs(a) - abs(b)
-  lastCount = count;
 
   msg.can_id  = CAN_ID;
   msg.can_dlc = 8;
@@ -74,20 +77,16 @@ void loop() {
   msg.data[1] = (count >>  8) & 0xFF;
   msg.data[2] =  count        & 0xFF;
   msg.data[3] = 0;
-  msg.data[4] = (rate >> 16) & 0xFF;
-  msg.data[5] = (rate >>  8) & 0xFF;
-  msg.data[6] =  rate        & 0xFF;
+  msg.data[4] = 0;
+  msg.data[5] = 0;
+  msg.data[6] = 0;
   msg.data[7] = toyotaChecksum(msg.data, 7, CAN_ID);
   mcp2515.sendMessage(&msg);
 
 #ifdef DEBUG_SERIAL
   Serial.print("count=");
-  Serial.print(count);
-  Serial.print(" rate=");
-  Serial.println(rate);
+  Serial.println(count);
 #endif
-
-  delay(TX_MS);
 }
 
 
