@@ -5,6 +5,8 @@ English ｜ [中文](#smartzss中文說明)
 Files for the ZSS (Zorro Steering Sensor) on a Toyota Prius with openpilot
 (`iambluefred/openpilot`, branch `op0.11.2-zss`): firmware, housing, schematic and check tools.
 
+> ⚠️ **Research and reference only.** This modifies a vehicle's steering sensor signals. Read the [Disclaimer](#disclaimer) before using anything here.
+
 ## Folders
 
 | Folder | What is inside |
@@ -31,6 +33,15 @@ The report is saved in `zss_reports/` in the folder where you ran the command.
 
 `0x23 SECONDARY_STEER_ANGLE`, `ZORRO_STEER : 7|24@0- (0.004901594652,0)` (`opendbc/dbc/toyota_zss.dbc`)
 
+## Disclaimer
+
+- This project is provided "as is" for research, study and reference only, without any warranty of correctness, completeness, safety or fitness for any purpose.
+- It adds a sensor that feeds steering-angle data to a driver-assistance system. Faulty hardware, firmware, wiring or calibration can cause unexpected steering behaviour, loss of control, accidents, injury or death.
+- Modifying a vehicle may be illegal where you live, may fail inspection, and may void the warranty and insurance. Check your local laws first.
+- Do not test on public roads. Test only in a safe, closed area, keep your hands on the wheel, and be ready to take over at all times.
+- You build, install and use anything from this project entirely at your own risk. The author accepts no liability for any loss, damage, injury or legal consequence.
+- Not affiliated with or endorsed by Toyota, comma.ai or the openpilot project.
+
 ## License
 
 TBD
@@ -42,6 +53,8 @@ TBD
 [English](#smartzss) ｜ 中文
 
 Toyota Prius + openpilot（`iambluefred/openpilot` 的 `op0.11.2-zss` branch）用的 ZSS（Zorro Steering Sensor）相關檔案：韌體、外殼、電路圖、檢查工具。
+
+> ⚠️ **僅供研究參考。** 本專案會改變車輛的轉向感測訊號，使用前請先閱讀[免責聲明](#免責聲明)。
 
 ## 資料夾
 
@@ -68,6 +81,15 @@ python3 readzss.py 172.20.10.6
 ## CAN 訊號
 
 `0x23 SECONDARY_STEER_ANGLE`，`ZORRO_STEER : 7|24@0- (0.004901594652,0)`（`opendbc/dbc/toyota_zss.dbc`）
+
+## 免責聲明
+
+- 本專案依「現狀」提供，僅供研究、學習與參考，不保證正確、完整、安全或適用於任何用途。
+- 本專案加裝的感測器會把方向盤角度提供給駕駛輔助系統。硬體、韌體、接線或校正有誤，可能造成轉向異常、車輛失控、事故、受傷甚至死亡。
+- 改裝車輛可能違反當地法規、無法通過驗車，並可能影響原廠保固與保險。使用前請先確認當地法規。
+- 請勿在公共道路上測試。只在安全的封閉場地測試，雙手保持握住方向盤，隨時準備接手。
+- 依本專案製作、安裝或使用所產生的任何損失、損害、傷害或法律責任，由使用者自行承擔，作者不負任何責任。
+- 本專案與 Toyota、comma.ai、openpilot 專案無關，也未經其認可。
 
 ## 授權
 
